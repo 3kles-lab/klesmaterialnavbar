@@ -1,6 +1,6 @@
 {
   "name": "@3kles/kles-material-navbar",
-  "version": "17.0.0",
+  "version": "17.0.1",
   "scripts": {
     "build:lib": "ng build kles-material-navbar --configuration production",
     "build:watch": "ng build kles-material-navbar --watch",

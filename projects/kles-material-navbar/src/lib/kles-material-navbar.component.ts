@@ -1,10 +1,9 @@
 import { Component, Input } from "@angular/core";
 import { KlesNavDropdownComponent, KlesNavItemComponent, KlesNavLinkComponent, KlesNavTitleComponent } from "./nav-item";
-import { ILinkModel } from "./models/link.model";
 import { IConfig } from "./models/config.model";
 
 @Component({
-  selector: 'app-sidebar-nav',
+  selector: 'kles-navbar',
   styles: [
     `mat-toolbar {
         background-color: white;
