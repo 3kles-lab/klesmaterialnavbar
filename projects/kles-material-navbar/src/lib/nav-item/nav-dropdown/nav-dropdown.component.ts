@@ -10,7 +10,7 @@ import { Component, Input } from "@angular/core";
       </a>
       <ul class="nav-dropdown-items">
         <ng-template ngFor let-child [ngForOf]="link.children">
-          <app-sidebar-nav-item [item]='child'></app-sidebar-nav-item>
+          <!--<app-sidebar-nav-item [item]='child'></app-sidebar-nav-item> -->
         </ng-template>
       </ul>
     `
