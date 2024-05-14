@@ -5,8 +5,10 @@ import { Component, Input } from "@angular/core";
     selector: 'app-sidebar-nav-link',
     styleUrl: './nav-link.component.scss',
     template: `
-        <button *ngIf="!isExternalLink(); else external" mat-button [routerLink]="[link.path]" routerLinkActive="mat-primary active " [ngClass]="{fullsize}"> 
-        {{ link.label | translate | titlecase }}</button>
+        <button *ngIf="!isExternalLink(); else external" mat-button [routerLink]="[link.path]" routerLinkActive="mat-primary active " [ngClass]="{fullsize}">
+            {{ link.label | translate | klesTransform:link.pipeTransform}}
+        </button>
+        
         <ng-template #external>
             <a mat-button href="{{link.path}}">
                 {{ link.label | translate | titlecase }}

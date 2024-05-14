@@ -5,7 +5,7 @@ import { Component, Input } from "@angular/core";
     template: `
       <a class="nav-link nav-dropdown-toggle" appNavDropdownToggle>
         <i *ngIf="isIcon()" class="{{ link.icon }}"></i>
-        {{ link.name | translate | titlecase}}
+        {{ link.name | translate |  klesTransform:link.pipeTransform}}
         <span *ngIf="isBadge()" [ngClass]="'badge badge-' + link.badge.variant">{{ link.badge.text }}</span>
       </a>
       <ul class="nav-dropdown-items">

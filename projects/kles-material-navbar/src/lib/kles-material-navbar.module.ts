@@ -35,9 +35,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { KlesTransformPipe } from './pipes';
 
 @NgModule({
-  declarations: [KlesNavbarComponent, NAV_COMPONENT],
+  declarations: [KlesNavbarComponent, NAV_COMPONENT, KlesTransformPipe],
   imports: [
     CommonModule,
     RouterModule,
