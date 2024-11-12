@@ -52,13 +52,16 @@ import { IConfig } from "./models/config.model";
 
         <div class="menu show-gt-sm" [ngClass]="{'menu-start': config.align === 'start', 'menu-end' : config.align === 'end', 'menu-center' : config.align === 'center', fullsize: config.fullsize }">
             <ng-template ngFor let-navitem [ngForOf]="config?.navLinks || []">
-                <li *ngIf="isDivider(navitem)" class="nav-divider"></li>
-                <ng-template [ngIf]="isTitle(navitem)">
+                @if(navitem.visible){
+                  @if(isDivider(navitem)){
+                    <li class="nav-divider"></li>
+                  } @else if (isTitle(navitem)){
                     <app-sidebar-nav-title [title]='navitem'></app-sidebar-nav-title>
-                </ng-template>
-                <ng-template [ngIf]="!isDivider(navitem)&&!isTitle(navitem)">
+                  } @else{
                     <app-sidebar-nav-item [item]='navitem' [fullsize]="config.fullsize"></app-sidebar-nav-item>
-                </ng-template>
+                  }
+                }
+                
             </ng-template>
         </div>
 
@@ -81,10 +84,16 @@ export class KlesNavbarComponent {
 
   @Input({
     transform: (config: IConfig) => {
+      const navLinks = config.navLinks
+        .map((link) => ({ ...link, visible: link.visible === undefined ? true : link.visible }));
       if (!config.smallMode || config.smallMode.active === undefined || config.smallMode.active === null) {
-        return { ...config, smallMode: { ...config.smallMode, active: true } };
+        return {
+          ...config,
+          navLinks,
+          smallMode: { ...config.smallMode, active: true }
+        };
       }
-      return config;
+      return { ...config, navLinks };
     }
   }) config: IConfig = {};
 
