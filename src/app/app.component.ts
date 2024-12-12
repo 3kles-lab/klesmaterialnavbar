@@ -12,16 +12,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   nav = [
     {
       label: 'app.navbar.launch.title',
-      path: '/material/launch',
+      path: '/launch',
     },
     {
       label: 'app.navbar.history.title',
-      path: '/material/history',
+      path: '/history',
 
     },
     {
       label: 'app.navbar.settings.title',
-      path: '/material/settings',
+      path: '/settings',
     }
   ];
 
