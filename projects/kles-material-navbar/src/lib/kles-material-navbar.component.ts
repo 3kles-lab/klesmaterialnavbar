@@ -1,6 +1,8 @@
-import { Component, Input } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, viewChild } from "@angular/core";
 import { KlesNavDropdownComponent, KlesNavItemComponent, KlesNavLinkComponent, KlesNavTitleComponent } from "./nav-item";
 import { IConfig } from "./models/config.model";
+import { fromEvent } from "rxjs";
+import { startWith } from "rxjs/operators";
 
 @Component({
   selector: 'kles-navbar',
@@ -15,6 +17,7 @@ import { IConfig } from "./models/config.model";
         display: flex;
         align-items:center;
         justify-content: space-between;
+        padding: 0;
       }`,
     `.menu{
         flex-grow:1;
@@ -28,19 +31,34 @@ import { IConfig } from "./models/config.model";
         flex-direction: row;
         padding-right:5px;
       }`,
+    `.last {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        flex-direction: row;
+        padding-left: 5px;
+      }`,
+    `.toolbar {
+      display: flex;
+      flex: 1 1 auto;
+      height: 100%;
+      padding: 0 16px;
+      justify-content: space-between;
+    }`,
     `.menu-start {justify-content: flex-start}`,
     `.menu-end {justify-content: flex-end}`,
     `.menu-center {justify-content: center}`,
-    `.hide-gt-sm { @media screen and (min-width: 960px) { display: none; } }`,
-    `.show-gt-sm { @media screen and (max-width: 960px) { display: none; } }`,
+    `.hide-gt-sm { display: var(--button-menu-display) }`,
+    `.show-gt-sm { display: var(--menu-display) }`,
     `.fullsize { height: 100% }`,
     `.active {
             color: var(--primary-color) !important;
         }`
   ],
   template: `
+  <div #allbar>
     <mat-toolbar class="toolbar-row" role="heading">
-    
+      <div #toolbar class="toolbar">
         <div class="first">
           @if(config?.navLinks?.length && config.smallMode?.active){
             <button mat-icon-button [mat-menu-trigger-for]="menu" class="hide-gt-sm">
@@ -68,8 +86,9 @@ import { IConfig } from "./models/config.model";
         <div class="last">
             <ng-content select="[last]"></ng-content>
         </div>
-        
+      </div>
     </mat-toolbar>
+  </div>
 
     <mat-menu x-position="before" #menu="matMenu">
       <ng-template ngFor let-navitem [ngForOf]="config?.navLinks || []">
@@ -80,8 +99,7 @@ import { IConfig } from "./models/config.model";
     </mat-menu>
     `
 })
-export class KlesNavbarComponent {
-
+export class KlesNavbarComponent implements AfterViewInit {
   @Input({
     transform: (config: IConfig) => {
       const navLinks = config.navLinks
@@ -97,12 +115,49 @@ export class KlesNavbarComponent {
     }
   }) config: IConfig = {};
 
+  allbar = viewChild<ElementRef<HTMLElement>>('allbar');
+  toolbar = viewChild<ElementRef<HTMLElement>>('toolbar');
+
+  minToolbarWidth: number;
+
   public isDivider(item) {
     return item.divider ? true : false;
   }
 
   public isTitle(item) {
     return item.title ? true : false;
+  }
+
+  ngAfterViewInit() {
+    this.toolbar().nativeElement.style.setProperty('--menu-display', 'flex');
+    this.toolbar().nativeElement.style.setProperty('--button-menu-display', 'none');
+
+    this.minToolbarWidth = this.toolbar().nativeElement.clientWidth;
+
+    fromEvent(
+      window,
+      'resize'
+    ).pipe(
+      startWith({})
+    ).subscribe(() => this.checkOverflow());
+  }
+
+  checkOverflow(): void {
+    const allbar: HTMLElement = this.allbar().nativeElement;
+    const toolbar: HTMLElement = this.toolbar().nativeElement;
+
+    if (toolbar.clientWidth < this.minToolbarWidth && toolbar.style.getPropertyValue('--menu-display') !== 'none') {
+      this.minToolbarWidth = toolbar.clientWidth;
+    }
+
+    if (allbar.clientWidth < this.minToolbarWidth && toolbar.style.getPropertyValue('--menu-display') !== 'none') {
+      toolbar.style.setProperty('--menu-display', 'none');
+      toolbar.style.setProperty('--button-menu-display', 'block');
+    }
+    else if (allbar.clientWidth >= this.minToolbarWidth && toolbar.style.getPropertyValue('--menu-display') !== 'flex') {
+      toolbar.style.setProperty('--menu-display', 'flex');
+      toolbar.style.setProperty('--button-menu-display', 'none');
+    }
   }
 }
 
