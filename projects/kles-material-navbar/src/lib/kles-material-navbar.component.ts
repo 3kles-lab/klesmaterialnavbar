@@ -12,14 +12,14 @@ import { IConfig } from "./models/config.model";
         box-shadow: 0 0px 6px 0px #999;
         position: relative;
         z-index: 1;
-        display: flex;
-        align-items:center;
-        justify-content: space-between;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, auto) 1fr minmax(0, auto);
       }`,
     `.menu{
-        flex-grow:1;
-        display: flex;
-        gap:3px;
+        flex-grow: 1;
+        display:flex;
+        width: 100%;
       }`,
     `.first {
         display:flex;
@@ -28,11 +28,16 @@ import { IConfig } from "./models/config.model";
         flex-direction: row;
         padding-right:5px;
       }`,
+      
+      `.last {
+        display: flex;
+        justify-content: end;
+      }`,
     `.menu-start {justify-content: flex-start}`,
     `.menu-end {justify-content: flex-end}`,
     `.menu-center {justify-content: center}`,
     `.hide-gt-sm { @media screen and (min-width: 960px) { display: none; } }`,
-    `.show-gt-sm { @media screen and (max-width: 960px) { display: none; } }`,
+    `.show-gt-sm { @media screen and (max-width: 960px) { visibility: hidden; } }`,
     `.fullsize { height: 100% }`,
     `.active {
             color: var(--primary-color) !important;
@@ -50,20 +55,24 @@ import { IConfig } from "./models/config.model";
             <ng-content select="[first]"></ng-content>
         </div>
 
-        <div class="menu show-gt-sm" [ngClass]="{'menu-start': config.align === 'start', 'menu-end' : config.align === 'end', 'menu-center' : config.align === 'center', fullsize: config.fullsize }">
-            <ng-template ngFor let-navitem [ngForOf]="config?.navLinks || []">
+          <nav mat-tab-nav-bar [mat-stretch-tabs]="config?.fullsize || false"
+          class=" show-gt-sm" [tabPanel]="tabPanel">
+            <div class="menu" [ngClass]="{'menu-start': config.align === 'start', 'menu-end' : config.align === 'end', 'menu-center' : config.align === 'center', fullsize: config.fullsize }">
+              <ng-template ngFor let-navitem [ngForOf]="config?.navLinks || []">
                 @if(navitem.visible){
                   @if(isDivider(navitem)){
                     <li class="nav-divider"></li>
                   } @else if (isTitle(navitem)){
                     <app-sidebar-nav-title [title]='navitem'></app-sidebar-nav-title>
-                  } @else{
+                  } @else {
                     <app-sidebar-nav-item [item]='navitem' [fullsize]="config.fullsize"></app-sidebar-nav-item>
                   }
                 }
-                
-            </ng-template>
-        </div>
+              </ng-template>
+
+            </div>
+            
+          </nav>
 
         <div class="last">
             <ng-content select="[last]"></ng-content>
@@ -78,6 +87,8 @@ import { IConfig } from "./models/config.model";
           </button>
       </ng-template>
     </mat-menu>
+
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
     `
 })
 export class KlesNavbarComponent {
@@ -113,3 +124,19 @@ export const NAV_COMPONENT = [
   KlesNavLinkComponent,
   KlesNavTitleComponent
 ];
+
+
+// <nav mat-tab-nav-bar class="menu show-gt-sm" [ngClass]="{'menu-start': config.align === 'start', 'menu-end' : config.align === 'end', 'menu-center' : config.align === 'center', fullsize: config.fullsize }">
+//             <ng-template ngFor let-navitem [ngForOf]="config?.navLinks || []">
+//                 @if(navitem.visible){
+//                   @if(isDivider(navitem)){
+//                     <li class="nav-divider"></li>
+//                   } @else if (isTitle(navitem)){
+//                     <app-sidebar-nav-title [title]='navitem'></app-sidebar-nav-title>
+//                   } @else{
+//                     <app-sidebar-nav-item [item]='navitem' [fullsize]="config.fullsize"></app-sidebar-nav-item>
+//                   }
+//                 }
+                
+//             </ng-template>
+//         </nav>
