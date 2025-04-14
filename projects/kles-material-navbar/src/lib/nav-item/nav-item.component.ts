@@ -1,7 +1,8 @@
 import { NgClass } from "@angular/common";
-import { Component, Input, OnInit, signal } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, signal } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
-import { filter, map } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { filter, map, takeUntil } from "rxjs/operators";
 
 @Component({
     selector: 'app-sidebar-nav-item',
@@ -15,13 +16,16 @@ import { filter, map } from "rxjs/operators";
             <app-sidebar-nav-dropdown [link]='item'></app-sidebar-nav-dropdown>
             </li>
         </ng-template>
-      `
+      `,
+    styles: [`:host{display: flex; align-items: center;}`]
 })
-export class KlesNavItemComponent implements OnInit {
+export class KlesNavItemComponent implements OnInit, OnDestroy {
     @Input() item: any;
     @Input() fullsize?: boolean;
 
     isActive = signal<boolean>(false);
+
+    private _onDestroy = new Subject<void>();
 
     public hasClass() {
         return this.item.class ? true : false
@@ -32,7 +36,7 @@ export class KlesNavItemComponent implements OnInit {
     }
 
     public thisUrl() {
-        return this.item.path
+        return this.item.path;
     }
 
     constructor(private router: Router) { }
@@ -43,10 +47,16 @@ export class KlesNavItemComponent implements OnInit {
             { fragment: "ignored", matrixParams: "ignored", paths: "exact", queryParams: "ignored" }));
 
         this.router.events.pipe(
+            takeUntil(this._onDestroy),
             filter(event => event instanceof NavigationEnd),
             map(() => this.router.isActive(this.item.path,
                 { fragment: "ignored", matrixParams: "ignored", paths: "exact", queryParams: "ignored" }))
         ).subscribe((isActive) => this.isActive.set(isActive));
+    }
+
+    ngOnDestroy(): void {
+        this._onDestroy.next();
+        this._onDestroy.complete();
     }
 
 }
