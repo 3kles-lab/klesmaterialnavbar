@@ -1,9 +1,9 @@
 {
   "name": "@3kles/kles-material-navbar",
-  "version": "17.2.1",
+  "version": "17.2.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/3kles-lab/kles-material-navbar"
+    "url": "https://github.com/3kles-lab/klesmaterialnavbar"
   },
   "keywords": [
     "3KLES",
@@ -13,9 +13,9 @@
   "author": "3Kles Lab",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/3kles-lab/kles-material-navbar/issues"
+    "url": "https://github.com/3kles-lab/klesmaterialnavbar/issues"
   },
-  "homepage": "https://github.com/3kles-lab/kles-material-navbar",
+  "homepage": "https://github.com/3kles-lab/klesmaterialnavbar",
   "peerDependencies": {
     "@angular/common": "^17.0.2",
     "@angular/core": "^17.0.2",
